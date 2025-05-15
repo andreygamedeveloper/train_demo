@@ -13,8 +13,7 @@ namespace Game.Controller
 
         private IDisposable _stateDisposable;
 
-        public TrainMachine(GameModel gameModel, TrainController trainController, TrainModel trainModel,
-            MapOptimizer mapOptimizer)
+        public TrainMachine(GameModel gameModel, TrainController trainController, TrainModel trainModel, MapOptimizer mapOptimizer)
         {
             GameModel = gameModel;
             TrainController = trainController;

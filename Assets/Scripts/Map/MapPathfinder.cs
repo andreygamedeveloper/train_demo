@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Game.Map
 {
-    public class MapPathfinder
+    public class MapPathfinder : IPathfinder
     {
         private readonly MapGraph _graph;
 

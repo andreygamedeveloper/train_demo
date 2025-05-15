@@ -4,10 +4,10 @@ namespace Game.Map
 {
     public class MapOptimizer
     {
-        private readonly MapPathfinder _pathfinder;
+        private readonly IPathfinder _pathfinder;
         private readonly MapGraph _graph;
 
-        public MapOptimizer(MapPathfinder pathfinder, MapGraph graph)
+        public MapOptimizer(IPathfinder pathfinder, MapGraph graph)
         {
             _pathfinder = pathfinder;
             _graph = graph;
