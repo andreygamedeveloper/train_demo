@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EntryPoint : MonoBehaviour
 {
-    [SerializeField] private SceneContent _sceneContent;
+    [SerializeField] private MapGraph _mapGraph;
     [SerializeField] private GameView _gameView;
     [SerializeField] private SceneView _sceneView;
 
@@ -13,7 +13,9 @@ public class EntryPoint : MonoBehaviour
     private void Awake()
     {
         var gameModel = CreateGameModel();
-        var controller = new GameController(gameModel);
+        var mapPathfinder = new MapPathfinder(_mapGraph);
+        var mapOptimizer = new MapOptimizer(mapPathfinder, _mapGraph);
+        var controller = new GameController(gameModel, mapOptimizer);
 
         _gameView
             .Init(gameModel)
@@ -30,7 +32,7 @@ public class EntryPoint : MonoBehaviour
 
     private GameModel CreateGameModel()
     {
-        var trains = _sceneContent.Trains
+        var trains = _mapGraph.Trains
             .Select(train => new TrainModel(train))
             .ToList();
 

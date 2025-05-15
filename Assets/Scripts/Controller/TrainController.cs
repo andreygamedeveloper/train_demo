@@ -1,27 +1,61 @@
 using System;
+using System.Linq;
 using R3;
 using UnityEngine;
 
 public class TrainController
 {
     private readonly CompositeDisposable _disposable = new();
+    private readonly GameModel _gameModel;
     private readonly TrainModel _trainModel;
+    private readonly MapOptimizer _mapOptimizer;
 
-    public TrainController(TrainModel trainModel)
+    public TrainController(GameModel gameModel, TrainModel trainModel, MapOptimizer mapOptimizer)
     {
+        _gameModel = gameModel;
         _trainModel = trainModel;
+        _mapOptimizer = mapOptimizer;
     }
 
     public IDisposable Init()
     {
-        var position = GetRandomPosition();
-        _trainModel.SetPosition(position);
+        var randomNode = _mapOptimizer.GetRandomNode();
+        var bestRoute = _mapOptimizer.GetBestRoute(_trainModel);
+        var startRoute = _mapOptimizer.GetShortestPath(randomNode, bestRoute.First());
         
+        var trainMachine = new TrainMachine(_gameModel, this, _trainModel, _mapOptimizer);
+        trainMachine.AddTo(_disposable);
+        
+        trainMachine.ChangeState(new TrainMovingState(startRoute));
+
         return _disposable;
     }
 
-    private Vector2 GetRandomPosition()
+    public Observable<Unit> Move(MapNode start, MapNode end)
     {
-        throw new NotImplementedException();
+        return Observable.Create<Unit>(subject =>
+        {
+            var startPosition = start.Position;
+            var endPosition = end.Position;
+            var distance = _mapOptimizer.GetDistance(start, end);
+            var totalTime = distance / _trainModel.Content.movementSpeed;
+            var currentTime = 0.0f;
+
+            return Observable
+                .EveryUpdate()
+                .Subscribe(_ =>
+                {
+                    currentTime += Time.deltaTime;
+                    var ratio = Mathf.Clamp01(currentTime / totalTime);
+                    var position = Vector3.Lerp(startPosition, endPosition, ratio);
+                    _trainModel.SetPosition(position);
+
+                    if (ratio >= 1.0f)
+                    {
+                        subject.OnNext(Unit.Default);
+                        subject.OnCompleted();
+                    }
+                });
+        });
     }
 }
