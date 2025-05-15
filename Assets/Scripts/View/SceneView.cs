@@ -1,29 +1,33 @@
 using System;
+using Game.Model;
 using R3;
 using UnityEngine;
 
-public class SceneView : MonoBehaviour
+namespace Game.View
 {
-    [SerializeField] private TrainView _trainPrefab;
-    [SerializeField] private Transform _trainAnchor;
-    
-    private readonly CompositeDisposable _disposable = new();
-
-    public IDisposable Init(GameModel gameModel)
+    public class SceneView : MonoBehaviour
     {
-        foreach (var trainModel in gameModel.Trains)
+        [SerializeField] private TrainView _trainPrefab;
+        [SerializeField] private Transform _trainAnchor;
+
+        private readonly CompositeDisposable _disposable = new();
+
+        public IDisposable Init(GameModel gameModel)
         {
-            var trainInstance = GameObject.Instantiate(_trainPrefab, _trainAnchor);
+            foreach (var trainModel in gameModel.Trains)
+            {
+                var trainInstance = GameObject.Instantiate(_trainPrefab, _trainAnchor);
 
-            trainInstance
-                .Init(trainModel)
-                .AddTo(_disposable);
+                trainInstance
+                    .Init(trainModel)
+                    .AddTo(_disposable);
 
-            Disposable
-                .Create(() => GameObject.Destroy(trainInstance.gameObject))
-                .AddTo(_disposable);
+                Disposable
+                    .Create(() => GameObject.Destroy(trainInstance.gameObject))
+                    .AddTo(_disposable);
+            }
+
+            return _disposable;
         }
-
-        return _disposable;
     }
 }

@@ -1,6 +1,9 @@
-public enum MapNodeType
+namespace Game.Map
 {
-    Point,
-    Source,
-    Destination
+    public enum MapNodeType
+    {
+        Point,
+        Source,
+        Destination
+    }
 }

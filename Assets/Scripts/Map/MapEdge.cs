@@ -1,9 +1,12 @@
 using System;
 
-[Serializable]
-public class MapEdge
+namespace Game.Map
 {
-    public MapNode From;
-    public MapNode To;
-    public float Distance;
+    [Serializable]
+    public class MapEdge
+    {
+        public MapNode From;
+        public MapNode To;
+        public float Distance;
+    }
 }

@@ -1,6 +1,9 @@
 using System;
 
-public interface ITrainState
+namespace Game.Controller
 {
-    IDisposable Init(TrainMachine machine);
+    public interface ITrainState
+    {
+        IDisposable Init(TrainMachine machine);
+    }
 }

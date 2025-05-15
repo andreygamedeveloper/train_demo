@@ -1,8 +1,11 @@
 using System;
 
-[Serializable]
-public class MapTrain
+namespace Game.Map
 {
-    public float movementSpeed;
-    public float miningTime;
+    [Serializable]
+    public class MapTrain
+    {
+        public float movementSpeed;
+        public float miningTime;
+    }
 }

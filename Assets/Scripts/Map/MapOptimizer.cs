@@ -1,58 +1,61 @@
 using System.Collections.Generic;
 
-public class MapOptimizer
+namespace Game.Map
 {
-    private readonly MapPathfinder _pathfinder;
-    private readonly MapGraph _graph;
-
-    public MapOptimizer(MapPathfinder pathfinder, MapGraph graph)
+    public class MapOptimizer
     {
-        _pathfinder = pathfinder;
-        _graph = graph;
-    }
-    
-    public List<MapNode> GetBestRoute(TrainModel model)
-    {
-        var bestEfficiency = 0f;
-        var bestPath = null as List<MapNode>;
+        private readonly MapPathfinder _pathfinder;
+        private readonly MapGraph _graph;
 
-        foreach (var source in _graph.GetNodes(MapNodeType.Source))
+        public MapOptimizer(MapPathfinder pathfinder, MapGraph graph)
         {
-            foreach (var destination in _graph.GetNodes(MapNodeType.Destination))
-            {
-                var route = _pathfinder.FindShortestPath(source, destination, out var distance);
-
-                var tMove = 2 * distance / model.Content.movementSpeed;
-                var tMine = model.Content.miningTime * source.timeMultiplier;
-
-                var totalTime = tMove + tMine;
-                var efficiency = destination.pointsMultiplier / totalTime;
-
-                if (efficiency > bestEfficiency)
-                {
-                    bestEfficiency = efficiency;
-                    bestPath = new List<MapNode>(route);
-                }
-            }
+            _pathfinder = pathfinder;
+            _graph = graph;
         }
 
-        return bestPath;
-    }
-    
-    public MapNode GetRandomNode()
-    {
-        var nodes = _graph.GetNodes(MapNodeType.Point);
-        var index = UnityEngine.Random.Range(0, nodes.Count);
-        return nodes[index];
-    }
-    
-    public List<MapNode> GetShortestPath(MapNode start, MapNode end)
-    {
-        return _pathfinder.FindShortestPath(start, end, out _);
-    }
+        public List<MapNode> GetBestRoute(MapTrain trainData)
+        {
+            var bestEfficiency = 0f;
+            var bestPath = null as List<MapNode>;
 
-    public float GetDistance(MapNode start, MapNode end)
-    {
-        return _pathfinder.GetDistance(start, end);
+            foreach (var source in _graph.GetNodes(MapNodeType.Source))
+            {
+                foreach (var destination in _graph.GetNodes(MapNodeType.Destination))
+                {
+                    var route = _pathfinder.FindShortestPath(source, destination, out var distance);
+
+                    var tMove = 2 * distance / trainData.movementSpeed;
+                    var tMine = trainData.miningTime * source.timeMultiplier;
+
+                    var totalTime = tMove + tMine;
+                    var efficiency = destination.pointsMultiplier / totalTime;
+
+                    if (efficiency > bestEfficiency)
+                    {
+                        bestEfficiency = efficiency;
+                        bestPath = new List<MapNode>(route);
+                    }
+                }
+            }
+
+            return bestPath;
+        }
+
+        public MapNode GetRandomNode()
+        {
+            var nodes = _graph.GetNodes(MapNodeType.Point);
+            var index = UnityEngine.Random.Range(0, nodes.Count);
+            return nodes[index];
+        }
+
+        public List<MapNode> GetShortestPath(MapNode start, MapNode end)
+        {
+            return _pathfinder.FindShortestPath(start, end, out _);
+        }
+
+        public float GetDistance(MapNode start, MapNode end)
+        {
+            return _pathfinder.GetDistance(start, end);
+        }
     }
 }

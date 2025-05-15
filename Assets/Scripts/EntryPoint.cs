@@ -1,4 +1,8 @@
 using System.Linq;
+using Game.Controller;
+using Game.Map;
+using Game.Model;
+using Game.View;
 using R3;
 using UnityEngine;
 

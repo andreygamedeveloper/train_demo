@@ -1,41 +1,44 @@
 using System;
+using Game.Model;
 using R3;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
-public class TrainView : MonoBehaviour
+namespace Game.View
 {
-    [SerializeField] private Renderer _renderer;
-    [SerializeField] private RouteView _routeView;
-    
-    private readonly CompositeDisposable _disposable = new();
-
-    public IDisposable Init(TrainModel model)
+    public class TrainView : MonoBehaviour
     {
-        var color = GetRandomColor();
-        _renderer.material.color = color;
-        
-        model.Position
-            .Subscribe(position => transform.position = position)
-            .AddTo(_disposable);
+        [SerializeField] private Renderer _renderer;
+        [SerializeField] private RouteView _routeView;
 
-        model.Route
-            .Subscribe(route => _routeView.ShowPath(route))
-            .AddTo(_disposable);
+        private readonly CompositeDisposable _disposable = new();
 
-        _routeView
-            .Init(color)
-            .AddTo(_disposable);
-        
-        return _disposable;
-    }
+        public IDisposable Init(TrainModel model)
+        {
+            var color = GetRandomColor();
+            _renderer.material.color = color;
 
-    private Color GetRandomColor()
-    {
-        var hue = Random.value;
-        var saturation = 0.8f + 0.2f * Random.value;
-        var value = 0.8f + 0.2f * Random.value;
+            model.Position
+                .Subscribe(position => transform.position = position)
+                .AddTo(_disposable);
 
-        return Color.HSVToRGB(hue, saturation, value);
+            model.Route
+                .Subscribe(route => _routeView.ShowPath(route))
+                .AddTo(_disposable);
+
+            _routeView
+                .Init(color)
+                .AddTo(_disposable);
+
+            return _disposable;
+        }
+
+        private Color GetRandomColor()
+        {
+            var hue = UnityEngine.Random.value;
+            var saturation = 0.8f + 0.2f * UnityEngine.Random.value;
+            var value = 0.8f + 0.2f * UnityEngine.Random.value;
+
+            return Color.HSVToRGB(hue, saturation, value);
+        }
     }
 }
