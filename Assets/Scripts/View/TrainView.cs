@@ -20,6 +20,10 @@ namespace Game.View
             model.Position
                 .Subscribe(position => transform.position = position)
                 .AddTo(_disposable);
+            
+            model.Direction
+                .Subscribe(direction => transform.rotation = Quaternion.LookRotation(direction))
+                .AddTo(_disposable);
 
             model.Route
                 .Subscribe(route => _routeView.ShowPath(route))

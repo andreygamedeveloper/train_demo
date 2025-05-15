@@ -45,6 +45,9 @@ namespace Game.Controller
                 var totalTime = distance / _trainModel.Content.movementSpeed;
                 var currentTime = 0.0f;
 
+                var direction = endPosition - startPosition;
+                _trainModel.SetDirection(direction.normalized);
+
                 return Observable
                     .EveryUpdate()
                     .Subscribe(_ =>

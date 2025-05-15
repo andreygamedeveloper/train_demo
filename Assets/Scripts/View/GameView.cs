@@ -15,7 +15,11 @@ namespace Game.View
         public IDisposable Init(GameModel model)
         {
             model.Points
-                .Subscribe(points => _pointsText.text = Mathf.RoundToInt(points).ToString())
+                .Subscribe(points =>
+                {
+                    var roundPoints = Mathf.RoundToInt(points);
+                    _pointsText.text = $"Points: {roundPoints}";
+                })
                 .AddTo(_disposable);
 
             return _disposable;
